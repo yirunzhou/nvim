@@ -25,38 +25,52 @@ lsp_zero.extend_lspconfig({
 })
 
 
-local lspconfig = require("lspconfig")
-local configs = require("lspconfig.configs")
-
 -- yelp python server config
 -- https://yelp.slack.com/archives/CA7F2EM6G/p1673370381993289?thread_ts=1673342577.011049&cid=CA7F2EM6G
 
-if not configs.pyls then
-    configs.pyls = {
+-- local lspconfig = require("lspconfig")
+-- local configs = require("lspconfig.configs")
 
-        default_config = {
-            cmd = { "pyls" },
-            filetypes = { "python" },
-            root_dir = function(fname)
-                return vim.fn.getcwd()
-            end,
-        },
-        docs = {
-            package_json =
-            "https://raw.githubusercontent.com/palantir/python-language-server/develop/vscode-client/package.json",
-            description = [[
-https://github.com/palantir/python-language-server
-`python-language-server`, a language server for Python.
-The language server can be installed via `pipx install 'python-language-server[all]'`.
-    ]],
-            default_config = {
-                root_dir = "vim's starting directory",
-            },
-        },
+-- if not configs.pyls then
+--     configs.pyls = {
+--
+--         default_config = {
+--             cmd = { "pyls" },
+--             filetypes = { "python" },
+--             root_dir = function(fname)
+--                 return vim.fn.getcwd()
+--             end,
+--         },
+--         docs = {
+--             package_json =
+--             "https://raw.githubusercontent.com/palantir/python-language-server/develop/vscode-client/package.json",
+--             description = [[
+-- https://github.com/palantir/python-language-server
+-- `python-language-server`, a language server for Python.
+-- The language server can be installed via `pipx install 'python-language-server[all]'`.
+--     ]],
+--             default_config = {
+--                 root_dir = "vim's starting directory",
+--             },
+--         },
+--     }
+-- end
+--
+-- lspconfig["pyls"].setup({})
+
+-- pylsp setup outside Yelp
+require 'lspconfig'.pylsp.setup {
+    settings = {
+        pylsp = {
+            plugins = {
+                pycodestyle = {
+                    ignore = { 'W391' },
+                    maxLineLength = 100
+                }
+            }
+        }
     }
-end
-
-lspconfig["pyls"].setup({})
+}
 
 -- Auto completion
 
@@ -75,7 +89,6 @@ cmp.setup({
 })
 
 -- mason
-
 require("mason").setup()
 
 -- lua ls
@@ -97,15 +110,15 @@ require("lspconfig").lua_ls.setup({
 
 
 -- eslint
-lspconfig.eslint.setup({
-    root_dir = require('lspconfig').util.root_pattern(".eslintrc.json", "package.json", ".git"),
-    on_attach = function(client, bufnr)
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            command = "EslintFixAll",
-        })
-    end,
-})
+-- lspconfig.eslint.setup({
+--     root_dir = require('lspconfig').util.root_pattern(".eslintrc.json", "package.json", ".git"),
+--     on_attach = function(client, bufnr)
+--         vim.api.nvim_create_autocmd("BufWritePre", {
+--             buffer = bufnr,
+--             command = "EslintFixAll",
+--         })
+--     end,
+-- })
 
 -- require 'lspconfig'.eslint.setup {}
 
